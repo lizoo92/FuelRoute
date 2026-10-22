@@ -1,19 +1,9 @@
-distancia = float(input("Digite a distância da viagem em km: "))
-preco_combustivel = float(input("Digite o preço do combustível em R$/L: "))
-tempo_normal = float(input("Digite o tempo normal da rota em minutos: "))
-tempo_atual = float(input("Digite o tempo atual da rota em minutos: "))
+def calcular_percentual_transito(tempo_normal, tempo_atual):
+    percentual = ((tempo_atual - tempo_normal) / tempo_normal) * 100
+    return percentual
 
-if distancia <= 0:
-    print("A distância da viagem deve ser maior que zero.")
-elif preco_combustivel <= 0:
-    print("O preço do combustível deve ser maior que zero.")
-elif tempo_normal <= 0:
-    print("O tempo normal da rota deve ser maior que zero.")
-elif tempo_atual <= 0:
-    print("O tempo atual da rota deve ser maior que zero.")
-else:
-    percentual_transito = ((tempo_atual - tempo_normal) / tempo_normal) * 100
 
+def classificar_transito(percentual_transito):
     if percentual_transito <= 10:
         consumo = 10.5
         descricao_transito = "Sem trânsito"
@@ -27,8 +17,45 @@ else:
         consumo = 8.0
         descricao_transito = "Trânsito intenso"
 
+    return consumo, descricao_transito
+
+
+def calcular_viagem(distancia, consumo, preco_combustivel):
     litros_necessarios = distancia / consumo
     custo_viagem = litros_necessarios * preco_combustivel
+    return litros_necessarios, custo_viagem
+
+
+def validar_dados(distancia, preco_combustivel, tempo_normal, tempo_atual):
+    if distancia <= 0:
+        print("A distância da viagem deve ser maior que zero.")
+        return False
+    if preco_combustivel <= 0:
+        print("O preço do combustível deve ser maior que zero.")
+        return False
+    if tempo_normal <= 0:
+        print("O tempo normal da rota deve ser maior que zero.")
+        return False
+    if tempo_atual <= 0:
+        print("O tempo atual da rota deve ser maior que zero.")
+        return False
+    return True
+
+distancia = float(input("Digite a distância da viagem em km: "))
+preco_combustivel = float(input("Digite o preço do combustível em R$/L: "))
+tempo_normal = float(input("Digite o tempo normal da rota em minutos: "))
+tempo_atual = float(input("Digite o tempo atual da rota em minutos: "))
+
+if validar_dados(distancia, preco_combustivel, tempo_normal, tempo_atual): 
+    percentual_transito = calcular_percentual_transito(tempo_normal, tempo_atual)
+
+    consumo, descricao_transito = classificar_transito(percentual_transito)
+
+    litros_necessarios, custo_viagem = calcular_viagem(
+        distancia,
+        consumo,
+        preco_combustivel
+    )
 
     print("---Resultado da Viagem:---")
     print(f"Litros Necessários: {litros_necessarios:.2f} L")
