@@ -1,6 +1,7 @@
 import os
 import requests
 from dotenv import load_dotenv
+from fuelroute import calcular_percentual_transito, classificar_transito
 
 # ---------------------------------------------------------
 # 1. Configuração e Variáveis de Ambiente
@@ -90,5 +91,19 @@ print(f"Tempo normal: {tempo_normal_minutos:.2f} minutos")
 # ---------------------------------------------------------
 # 6. Indicadores de Trânsito
 # ---------------------------------------------------------
-percentual_transito = ((tempo_atual_minutos - tempo_normal_minutos) / tempo_normal_minutos) * 100
-print(f"Variação do tempo: {percentual_transito:.2f}%")
+percentual_variacao_tempo = calcular_percentual_transito(
+    tempo_normal_minutos,
+    tempo_atual_minutos
+)
+print(f"Variação do tempo: {percentual_variacao_tempo:.2f}%")
+
+# ---------------------------------------------------------
+# 7. Classificação do Trânsito
+# ---------------------------------------------------------
+
+consumo, descricao_transito = classificar_transito(
+    percentual_variacao_tempo
+)
+
+print(f"Classificação: {descricao_transito}")
+print(f"Consumo estimado: {consumo:.2f} km/L")

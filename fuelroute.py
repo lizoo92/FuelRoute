@@ -20,10 +20,10 @@ def calcular_percentual_transito(tempo_normal, tempo_atual):
 
 
 def classificar_transito(percentual_transito):
-    if percentual_transito <= 10:
+    if percentual_transito <= 0:
         consumo = 10.5
         descricao_transito = "Sem trânsito"
-    elif percentual_transito <= 25:
+    elif percentual_transito <= 15:
         consumo = 9.8
         descricao_transito = "Trânsito leve"
     elif percentual_transito <= 50:
@@ -55,31 +55,34 @@ def exibir_resultado(
     print(f"Litros necessários para a viagem: {litros_necessarios:.2f} L")
     print(f"Custo total da viagem: R$ {custo_viagem:.2f}")
 
-distancia = float(input("Digite a distância da viagem em km: "))
-preco_combustivel = float(input("Digite o preço do combustível em R$/L: "))
-tempo_normal = float(input("Digite o tempo normal da rota em minutos: "))
-tempo_atual = float(input("Digite o tempo atual da rota em minutos: "))
+def main():
+    distancia = float(input("Digite a distância da viagem em km: "))
+    preco_combustivel = float(input("Digite o preço do combustível em R$/L: "))
+    tempo_normal = float(input("Digite o tempo normal da rota em minutos: "))
+    tempo_atual = float(input("Digite o tempo atual da rota em minutos: "))
 
-if validar_dados(distancia, preco_combustivel, tempo_normal, tempo_atual):
-    percentual_transito = calcular_percentual_transito(
-        tempo_normal,
-        tempo_atual
-    )
+    if validar_dados(distancia, preco_combustivel, tempo_normal, tempo_atual):
+        percentual_transito = calcular_percentual_transito(
+            tempo_normal,
+            tempo_atual
+        )
 
-    consumo, descricao_transito = classificar_transito(
-        percentual_transito
-    )
+        consumo, descricao_transito = classificar_transito(
+            percentual_transito
+        )
 
-    litros_necessarios, custo_viagem = calcular_viagem(
-        distancia,
-        consumo,
-        preco_combustivel
-    )
+        litros_necessarios, custo_viagem = calcular_viagem(
+            distancia,
+            consumo,
+            preco_combustivel
+        )
 
-    exibir_resultado(
-        litros_necessarios,
-        custo_viagem,
-        descricao_transito,
-        consumo,
-        percentual_transito
-    )
+        exibir_resultado(
+            litros_necessarios,
+            custo_viagem,
+            descricao_transito,
+            consumo,
+            percentual_transito
+        )
+if __name__ == "__main__":
+    main()
