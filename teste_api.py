@@ -1,7 +1,11 @@
 import os
 import requests
 from dotenv import load_dotenv
-from fuelroute import calcular_percentual_transito, classificar_transito
+from fuelroute import (
+    calcular_percentual_transito,
+    classificar_transito,
+    converter_segundos_para_minutos
+)
 
 # ---------------------------------------------------------
 # 1. Configuração e Variáveis de Ambiente
@@ -70,24 +74,11 @@ print(static_duracao)
 distancia_km = distancia_metros / 1000
 print(f"Distância: {distancia_km} km")
 
-duracao_sem_s = duracao.replace("s", "")
-print(duracao_sem_s)
+tempo_normal_minutos = converter_segundos_para_minutos(static_duracao)
+tempo_atual_minutos = converter_segundos_para_minutos(duracao)
 
-duracao_segundos = float(duracao_sem_s)
-print(duracao_segundos)
-
-tempo_atual_minutos = duracao_segundos / 60
 print(f"Tempo atual: {tempo_atual_minutos:.2f} minutos")
-
-static_duracao_sem_s = static_duracao.replace("s", "")
-print(static_duracao_sem_s)
-
-static_duracao_segundos = float(static_duracao_sem_s)
-print(static_duracao_segundos)
-
-tempo_normal_minutos = static_duracao_segundos / 60
 print(f"Tempo normal: {tempo_normal_minutos:.2f} minutos")
-
 # ---------------------------------------------------------
 # 6. Indicadores de Trânsito
 # ---------------------------------------------------------
