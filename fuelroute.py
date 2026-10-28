@@ -18,6 +18,7 @@ def calcular_percentual_transito(tempo_normal, tempo_atual):
     percentual = ((tempo_atual - tempo_normal) / tempo_normal) * 100
     return percentual
 
+
 def converter_segundos_para_minutos(duracao):
     duracao_sem_s = duracao.replace("s", "")
     duracao_segundos = float(duracao_sem_s)

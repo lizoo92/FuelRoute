@@ -4,7 +4,8 @@ from dotenv import load_dotenv
 from fuelroute import (
     calcular_percentual_transito,
     classificar_transito,
-    converter_segundos_para_minutos
+    converter_segundos_para_minutos,
+    calcular_viagem
 )
 
 # ---------------------------------------------------------
@@ -98,3 +99,20 @@ consumo, descricao_transito = classificar_transito(
 
 print(f"Classificação: {descricao_transito}")
 print(f"Consumo estimado: {consumo:.2f} km/L")
+
+# ---------------------------------------------------------
+# 8. Consumo de Combustível e Custo da Viagem
+# ---------------------------------------------------------
+
+entrada_preco = input("Digite o preço do combustível em R$/L: ")
+entrada_preco = entrada_preco.replace(",", ".")
+preco_combustivel = float(entrada_preco)
+
+
+litros_necessarios, custo_viagem = calcular_viagem(
+    distancia_km,
+    consumo,
+    preco_combustivel
+)
+print(f"Litros necessários: {litros_necessarios:.2f} L")
+print(f"Custo da viagem: R$ {custo_viagem:.2f}")
