@@ -25,8 +25,6 @@ headers = {
     "X-Goog-FieldMask": "routes.distanceMeters,routes.duration,routes.staticDuration"
 }
 
-origem = input("Digite o endereço de origem: ")
-destino = input("Digite o endereço de destino: ")
 
 # ---------------------------------------------------------
 # 3. Definição da Função de Busca de Rota
@@ -71,64 +69,71 @@ def obter_dados_rota(origem, destino):
     return distancia_metros, duracao, static_duracao
 
 # ---------------------------------------------------------
-# 4. Execução e Coleta dos Dados
+# 4. Funções de Entrada e Validação
 # ---------------------------------------------------------
-distancia_metros, duracao, static_duracao = obter_dados_rota(
-    origem,
-    destino
-)
+def ler_preco_combustivel():
+    entrada_preco = input("Digite o preço do combustível em R$/L: ")
+    entrada_preco = entrada_preco.replace(",", ".")
 
-# ---------------------------------------------------------
-# 5. Conversões e Cálculos (Distância e Tempo)
-# ---------------------------------------------------------
-distancia_km = distancia_metros / 1000
-print(f"Distância: {distancia_km} km")
+    try:
+        preco_combustivel = float(entrada_preco)
+    except ValueError:
+        print("Preço inválido. Digite apenas números.")
+        exit()
 
-tempo_normal_minutos = converter_segundos_para_minutos(static_duracao)
-tempo_atual_minutos = converter_segundos_para_minutos(duracao)
+    if preco_combustivel <= 0:
+        print("O preço do combustível deve ser maior que zero.")
+        exit()
 
-print(f"Tempo atual: {tempo_atual_minutos:.2f} minutos")
-print(f"Tempo normal: {tempo_normal_minutos:.2f} minutos")
+    return preco_combustivel
 
-# ---------------------------------------------------------
-# 6. Indicadores de Trânsito
-# ---------------------------------------------------------
-percentual_variacao_tempo = calcular_percentual_transito(
-    tempo_normal_minutos,
-    tempo_atual_minutos
-)
-print(f"Variação do tempo: {percentual_variacao_tempo:.2f}%")
+def main():
+    origem = input("Digite o endereço de origem: ")
+    destino = input("Digite o endereço de destino: ")
 
-# ---------------------------------------------------------
-# 7. Classificação do Trânsito
-# ---------------------------------------------------------
-consumo, descricao_transito = classificar_transito(
-    percentual_variacao_tempo
-)
+    distancia_metros, duracao, static_duracao = obter_dados_rota(
+        origem,
+        destino
+    )
 
-print(f"Classificação: {descricao_transito}")
-print(f"Consumo estimado: {consumo:.2f} km/L")
+    distancia_km = distancia_metros / 1000
+    print(f"Distância: {distancia_km} km")
 
-# ---------------------------------------------------------
-# 8. Consumo de Combustível e Custo da Viagem
-# ---------------------------------------------------------
-entrada_preco = input("Digite o preço do combustível em R$/L: ")
-entrada_preco = entrada_preco.replace(",", ".")
+    tempo_normal_minutos = converter_segundos_para_minutos(
+        static_duracao
+    )
+    tempo_atual_minutos = converter_segundos_para_minutos(
+        duracao
+    )
 
-try:
-    preco_combustivel = float(entrada_preco)
-except ValueError:
-    print("Preço inválido. Digite apenas números.")
-    exit()
+    print(f"Tempo atual: {tempo_atual_minutos:.2f} minutos")
+    print(f"Tempo normal: {tempo_normal_minutos:.2f} minutos")
 
-if preco_combustivel <= 0:
-    print("O preço do combustível deve ser maior que zero.")
-    exit()
+    percentual_variacao_tempo = calcular_percentual_transito(
+        tempo_normal_minutos,
+        tempo_atual_minutos
+    )
 
-litros_necessarios, custo_viagem = calcular_viagem(
-    distancia_km,
-    consumo,
-    preco_combustivel
-)
-print(f"Litros necessários: {litros_necessarios:.2f} L")
-print(f"Custo da viagem: R$ {custo_viagem:.2f}")
+    print(f"Variação do tempo: {percentual_variacao_tempo:.2f}%")
+
+    consumo, descricao_transito = classificar_transito(
+        percentual_variacao_tempo
+    )
+
+    print(f"Classificação: {descricao_transito}")
+    print(f"Consumo estimado: {consumo:.2f} km/L")
+
+    preco_combustivel = ler_preco_combustivel()
+
+    litros_necessarios, custo_viagem = calcular_viagem(
+        distancia_km,
+        consumo,
+        preco_combustivel
+    )
+
+    print(f"Litros necessários: {litros_necessarios:.2f} L")
+    print(f"Custo da viagem: R$ {custo_viagem:.2f}")
+
+
+if __name__ == "__main__":
+    main()
