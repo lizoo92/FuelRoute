@@ -25,49 +25,53 @@ headers = {
     "X-Goog-FieldMask": "routes.distanceMeters,routes.duration,routes.staticDuration"
 }
 
-dados = {
-    "origin": {
-        "address": "Avenida Paulista, 1106, São Paulo, SP"
-    },
-    "destination": {
-        "address": "Rua Fradique Coutinho, 771, São Paulo, SP"
-    },
-    "travelMode": "DRIVE",
-    "routingPreference": "TRAFFIC_AWARE"
-}
+origem = input("Digite o endereço de origem: ")
+destino = input("Digite o endereço de destino: ")
 
-# ---------------------------------------------------------
-# 3. Execução da Requisição
-# ---------------------------------------------------------
-resposta = requests.post(
-    url,
-    headers=headers,
-    json=dados
+def obter_dados_rota(origem, destino):
+    dados = {
+        "origin": {
+            "address": origem
+        },
+        "destination": {
+            "address": destino
+        },
+        "travelMode": "DRIVE",
+        "routingPreference": "TRAFFIC_AWARE"
+    }
+
+    resposta = requests.post(
+        url,
+        headers=headers,
+        json=dados
+    )
+
+    if resposta.status_code == 200:
+        print("Requisição realizada com sucesso.")
+    else:
+        print(f"Erro na requisição. Código: {resposta.status_code}")
+        exit()
+
+    dados_resposta = resposta.json()
+
+    if "routes" not in dados_resposta:
+        print("Nenhuma rota encontrada. Verifique os endereços informados.")
+        exit()
+
+    rotas = dados_resposta["routes"]
+    rota = rotas[0]
+
+    distancia_metros = rota["distanceMeters"]
+    duracao = rota["duration"]
+    static_duracao = rota["staticDuration"]
+
+    return distancia_metros, duracao, static_duracao
+
+distancia_metros, duracao, static_duracao = obter_dados_rota(
+    origem,
+    destino
 )
 
-print(resposta.status_code)
-print(resposta.json())
-
-# ---------------------------------------------------------
-# 4. Extração de Dados da Resposta
-# ---------------------------------------------------------
-dados_resposta = resposta.json()
-print(dados_resposta)
-
-rotas = dados_resposta["routes"]
-print(rotas)
-
-rota = rotas[0]
-print(rota)
-
-distancia_metros = rota["distanceMeters"]
-print(distancia_metros)
-
-duracao = rota["duration"]
-print(duracao)
-
-static_duracao = rota["staticDuration"]
-print(static_duracao)
 
 # ---------------------------------------------------------
 # 5. Conversões e Cálculos (Distância e Tempo)
@@ -106,7 +110,16 @@ print(f"Consumo estimado: {consumo:.2f} km/L")
 
 entrada_preco = input("Digite o preço do combustível em R$/L: ")
 entrada_preco = entrada_preco.replace(",", ".")
-preco_combustivel = float(entrada_preco)
+
+try:
+    preco_combustivel = float(entrada_preco)
+except ValueError:
+    print("Preço inválido. Digite apenas números.")
+    exit()
+
+if preco_combustivel <= 0:
+    print("O preço do combustível deve ser maior que zero.")
+    exit()
 
 
 litros_necessarios, custo_viagem = calcular_viagem(
