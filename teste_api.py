@@ -17,7 +17,7 @@ api_key = os.getenv("GOOGLE_MAPS_API_KEY")
 url = "https://routes.googleapis.com/directions/v2:computeRoutes"
 
 # ---------------------------------------------------------
-# 2. Preparação da Requisição (Headers e Payload)
+# 2. Preparação da Requisição (Headers e Entradas)
 # ---------------------------------------------------------
 headers = {
     "Content-Type": "application/json",
@@ -28,6 +28,9 @@ headers = {
 origem = input("Digite o endereço de origem: ")
 destino = input("Digite o endereço de destino: ")
 
+# ---------------------------------------------------------
+# 3. Definição da Função de Busca de Rota
+# ---------------------------------------------------------
 def obter_dados_rota(origem, destino):
     dados = {
         "origin": {
@@ -67,11 +70,13 @@ def obter_dados_rota(origem, destino):
 
     return distancia_metros, duracao, static_duracao
 
+# ---------------------------------------------------------
+# 4. Execução e Coleta dos Dados
+# ---------------------------------------------------------
 distancia_metros, duracao, static_duracao = obter_dados_rota(
     origem,
     destino
 )
-
 
 # ---------------------------------------------------------
 # 5. Conversões e Cálculos (Distância e Tempo)
@@ -84,6 +89,7 @@ tempo_atual_minutos = converter_segundos_para_minutos(duracao)
 
 print(f"Tempo atual: {tempo_atual_minutos:.2f} minutos")
 print(f"Tempo normal: {tempo_normal_minutos:.2f} minutos")
+
 # ---------------------------------------------------------
 # 6. Indicadores de Trânsito
 # ---------------------------------------------------------
@@ -96,7 +102,6 @@ print(f"Variação do tempo: {percentual_variacao_tempo:.2f}%")
 # ---------------------------------------------------------
 # 7. Classificação do Trânsito
 # ---------------------------------------------------------
-
 consumo, descricao_transito = classificar_transito(
     percentual_variacao_tempo
 )
@@ -107,7 +112,6 @@ print(f"Consumo estimado: {consumo:.2f} km/L")
 # ---------------------------------------------------------
 # 8. Consumo de Combustível e Custo da Viagem
 # ---------------------------------------------------------
-
 entrada_preco = input("Digite o preço do combustível em R$/L: ")
 entrada_preco = entrada_preco.replace(",", ".")
 
@@ -120,7 +124,6 @@ except ValueError:
 if preco_combustivel <= 0:
     print("O preço do combustível deve ser maior que zero.")
     exit()
-
 
 litros_necessarios, custo_viagem = calcular_viagem(
     distancia_km,
