@@ -43,11 +43,16 @@ def obter_dados_rota(origem, destino):
         "routingPreference": "TRAFFIC_AWARE"
     }
 
-    resposta = requests.post(
-        url,
-        headers=headers,
-        json=dados
-    )
+    try:
+        resposta = requests.post(
+            url,
+            headers=headers,
+            json=dados,
+            timeout=10
+        )
+    except requests.exceptions.RequestException:
+        print("Não foi possível conectar ao Google. Verifique sua internet e tente novamente.")
+        exit()
 
     if resposta.status_code == 200:
         print("Requisição realizada com sucesso.")
