@@ -102,10 +102,27 @@ def exibir_resultado(
     print(f"Custo total da viagem: R$ {custo_viagem:.2f}")
 
 
+def ler_numero_positivo(mensagem):
+    while True:
+        texto = input(mensagem)
+        texto = texto.replace(",", ".")
+
+        try:
+            numero = float(texto)
+        except ValueError:
+            print("Valor inválido. Digite apenas números (ex.: 5,89).")
+            continue
+
+        if numero <= 0:
+            print("O valor deve ser maior que zero.")
+            continue
+
+        return numero
+
 def main():
     combustivel = ler_combustivel(VEICULO)
 
-    distancia = float(input("Digite a distância da viagem em km: "))
+    distancia = ler_numero_positivo("Digite a distância da viagem em km: ")
     preco_combustivel = float(
         input(f"Digite o preço do {combustivel} em R$/L: ")
     )
