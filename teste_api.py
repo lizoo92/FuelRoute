@@ -5,7 +5,9 @@ from fuelroute import (
     calcular_percentual_transito,
     classificar_transito,
     converter_segundos_para_minutos,
-    calcular_viagem
+    calcular_viagem,
+    ler_combustivel,
+    VEICULO
 )
 
 # ---------------------------------------------------------
@@ -14,6 +16,11 @@ from fuelroute import (
 load_dotenv()
 
 api_key = os.getenv("GOOGLE_MAPS_API_KEY")
+
+if not api_key:
+    print("Chave da API não encontrada. Verifique se o arquivo .env existe e contém GOOGLE_MAPS_API_KEY.")
+    exit()
+
 url = "https://routes.googleapis.com/directions/v2:computeRoutes"
 
 # ---------------------------------------------------------
@@ -73,11 +80,12 @@ def obter_dados_rota(origem, destino):
 
     return distancia_metros, duracao, static_duracao
 
+
 # ---------------------------------------------------------
 # 4. Funções de Entrada e Validação
 # ---------------------------------------------------------
-def ler_preco_combustivel():
-    entrada_preco = input("Digite o preço do combustível em R$/L: ")
+def ler_preco_combustivel(combustivel):
+    entrada_preco = input(f"Digite o preço do {combustivel} em R$/L: ")
     entrada_preco = entrada_preco.replace(",", ".")
 
     try:
@@ -92,9 +100,11 @@ def ler_preco_combustivel():
 
     return preco_combustivel
 
+
 def main():
     origem = input("Digite o endereço de origem: ")
     destino = input("Digite o endereço de destino: ")
+    combustivel = ler_combustivel(VEICULO)
 
     distancia_metros, duracao, static_duracao = obter_dados_rota(
         origem,
@@ -122,13 +132,15 @@ def main():
     print(f"Variação do tempo: {percentual_variacao_tempo:.2f}%")
 
     consumo, descricao_transito = classificar_transito(
-        percentual_variacao_tempo
+        percentual_variacao_tempo,
+        VEICULO,
+        combustivel
     )
 
     print(f"Classificação: {descricao_transito}")
     print(f"Consumo estimado: {consumo:.2f} km/L")
 
-    preco_combustivel = ler_preco_combustivel()
+    preco_combustivel = ler_preco_combustivel(combustivel)
 
     litros_necessarios, custo_viagem = calcular_viagem(
         distancia_km,
