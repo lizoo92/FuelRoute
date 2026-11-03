@@ -123,11 +123,11 @@ def main():
     combustivel = ler_combustivel(VEICULO)
 
     distancia = ler_numero_positivo("Digite a distância da viagem em km: ")
-    preco_combustivel = float(
-        input(f"Digite o preço do {combustivel} em R$/L: ")
+    preco_combustivel = ler_numero_positivo(
+        f"Digite o preço ({combustivel}) em R$/L: "
     )
-    tempo_normal = float(input("Digite o tempo normal da rota em minutos: "))
-    tempo_atual = float(input("Digite o tempo atual da rota em minutos: "))
+    tempo_normal = ler_numero_positivo("Digite o tempo normal da rota em minutos: ")
+    tempo_atual = ler_numero_positivo("Digite o tempo atual da rota em minutos: ")
 
     if validar_dados(distancia, preco_combustivel, tempo_normal, tempo_atual):
         percentual_transito = calcular_percentual_transito(

@@ -7,6 +7,7 @@ from fuelroute import (
     converter_segundos_para_minutos,
     calcular_viagem,
     ler_combustivel,
+    ler_numero_positivo,
     VEICULO
 )
 
@@ -73,33 +74,12 @@ def obter_dados_rota(origem, destino):
 
     rotas = dados_resposta["routes"]
     rota = rotas[0]
-
-    distancia_metros = rota["distanceMeters"]
+    
+    distancia_metros = rota.get("distanceMeters", 0)
     duracao = rota["duration"]
     static_duracao = rota["staticDuration"]
 
     return distancia_metros, duracao, static_duracao
-
-
-# ---------------------------------------------------------
-# 4. Funções de Entrada e Validação
-# ---------------------------------------------------------
-def ler_preco_combustivel(combustivel):
-    entrada_preco = input(f"Digite o preço do {combustivel} em R$/L: ")
-    entrada_preco = entrada_preco.replace(",", ".")
-
-    try:
-        preco_combustivel = float(entrada_preco)
-    except ValueError:
-        print("Preço inválido. Digite apenas números.")
-        exit()
-
-    if preco_combustivel <= 0:
-        print("O preço do combustível deve ser maior que zero.")
-        exit()
-
-    return preco_combustivel
-
 
 def main():
     origem = input("Digite o endereço de origem: ")
@@ -124,6 +104,10 @@ def main():
     print(f"Tempo atual: {tempo_atual_minutos:.2f} minutos")
     print(f"Tempo normal: {tempo_normal_minutos:.2f} minutos")
 
+    if distancia_km <= 0 or tempo_normal_minutos <= 0:
+        print("Não foi possível calcular: origem e destino parecem ser o mesmo local.")          
+        return
+
     percentual_variacao_tempo = calcular_percentual_transito(
         tempo_normal_minutos,
         tempo_atual_minutos
@@ -140,7 +124,9 @@ def main():
     print(f"Classificação: {descricao_transito}")
     print(f"Consumo estimado: {consumo:.2f} km/L")
 
-    preco_combustivel = ler_preco_combustivel(combustivel)
+    preco_combustivel = ler_numero_positivo(
+        f"Digite o preço ({combustivel}) em R$/L: "
+    )
 
     litros_necessarios, custo_viagem = calcular_viagem(
         distancia_km,
